@@ -8,12 +8,16 @@
 <body>
 
   <h2>4 or more clicks // Click "C" para limpar </h2>
-  <label for="clamped">Clamped</label>
+  <label for="clamped">Clamped (Nó preso)</label>
   <input type="checkbox" id="clamped" name="clamped">
+  <label for="closed">or Closed (Fechada)</label>
+  <input type="checkbox" id="closed" name="clamped">
+  <label for="nSegmentos">Number of Segments:</label>
+  <input type="number" id="nSegmentos" name="nSegmentos" value="50">
+  
   <div id="canvasContainer">
-    <canvas id="viewport" width="1100" height="700"></canvas>
+    <canvas id="viewport" width="1920" height="700" style="border: 1px solid black;"></canvas>
   </div>
-
 
   <script src="Bspline.js"></script>
 </body>

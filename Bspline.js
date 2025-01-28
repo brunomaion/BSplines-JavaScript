@@ -1,4 +1,15 @@
 
+function closedBspline(pontosDeControle) {
+    // Repete os primeiros pontos no final para fechar a curva
+    let extendedpontosDeControle = [
+        ...pontosDeControle,
+        pontosDeControle[0], // Repete o primeiro ponto no final
+        pontosDeControle[1], // Repete o segundo ponto no final
+        pontosDeControle[2]  // Repete o terceiro ponto no final (dependendo do grau da B-spline)
+    ];
+    return extendedpontosDeControle;
+}
+
 function clampingBspline(pontosDeControle) {
     let extendedpontosDeControle = [
         pontosDeControle[0], pontosDeControle[0], // Repete o primeiro ponto
@@ -12,7 +23,13 @@ function calculateBspline(pontosDeControle) {
     if (document.getElementById('clamped').checked) {
         pontosDeControle = clampingBspline(pontosDeControle);
     }
-    let m = 50; // Número de segmentos
+
+    if (document.getElementById('closed').checked) {
+        pontosDeControle = closedBspline(pontosDeControle);
+    }
+
+
+    let nSegmentos = parseInt(document.getElementById('nSegmentos').value) || 50;
     let pontosDaCurva = [];
 
     for (let i = 1; i < pontosDeControle.length - 2; i++) {
@@ -36,8 +53,8 @@ function calculateBspline(pontosDeControle) {
         
         
 
-        for (let j = 0; j <= m; j++) {
-            let t = j / m;
+        for (let j = 0; j <= nSegmentos; j++) {
+            let t = j / nSegmentos;
             let x = ((a3 * t + a2) * t + a1) * t + a0;
             let y = ((b3 * t + b2) * t + b1) * t + b0;
             pontosDaCurva.push(x, y);
@@ -72,6 +89,15 @@ document.addEventListener('keydown', (event) => {
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         curva.pontosDeControle = [];
+    }
+    if (event.key === 'ArrowUp') {
+        let nSegmentosInput = document.getElementById('nSegmentos');
+        nSegmentosInput.value = parseInt(nSegmentosInput.value) + 1;
+        curva.drawCurve();
+    } else if (event.key === 'ArrowDown') {
+        let nSegmentosInput = document.getElementById('nSegmentos');
+        nSegmentosInput.value = Math.max(1, parseInt(nSegmentosInput.value) - 1);
+        curva.drawCurve();
     }
 });
 
