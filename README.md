@@ -1,4 +1,4 @@
-## Computer Graphics for Java Programmers Softcover
+## Computer Graphics for Java Programmers
 by Leen Ammeraal (Author), Kang Zhang (Author)
 
 
