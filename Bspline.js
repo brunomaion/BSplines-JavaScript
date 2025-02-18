@@ -19,17 +19,18 @@ function clampingBspline(pontosDeControle) {
     return extendedpontosDeControle;
 }
 function calculateBspline(pontosDeControle) {
-
+    pontosDeControle = clampingBspline(pontosDeControle);
+    /*
     if (document.getElementById('clamped').checked) {
         pontosDeControle = clampingBspline(pontosDeControle);
     }
 
     if (document.getElementById('closed').checked) {
         pontosDeControle = closedBspline(pontosDeControle);
-    }
+    }*/
 
 
-    let nSegmentos = parseInt(document.getElementById('nSegmentos').value) || 50;
+    let nSegmentos = 2;
     let pontosDaCurva = [];
 
     for (let i = 1; i < pontosDeControle.length - 2; i++) {
@@ -57,47 +58,20 @@ function calculateBspline(pontosDeControle) {
             let t = j / nSegmentos;
             let x = ((a3 * t + a2) * t + a1) * t + a0;
             let y = ((b3 * t + b2) * t + b1) * t + b0;
-            pontosDaCurva.push(x, y);
+            pontosDaCurva.push([x, y]);
         }
     }
+
     return pontosDaCurva;
 }
-function drawCurve(pontosCurva) {
-    let canvas = document.getElementById('viewport');
-    let ctx = canvas.getContext('2d');
-    ctx.beginPath();
-    ctx.moveTo(pontosCurva[0], pontosCurva[1]);
-    for (let i = 2; i < pontosCurva.length; i += 2) {
-        ctx.lineTo(pontosCurva[i], pontosCurva[i + 1]);
-    }
-    ctx.stroke();
-}
-function drawPontosControle(pontosMalha) {
-    let canvas = document.getElementById('viewport');
-    let ctx = canvas.getContext('2d');
-    ctx.fillStyle = 'red';
-    pontosMalha.forEach(ponto => {
-        ctx.beginPath();
-        ctx.arc(ponto[0], ponto[1], 3, 0, 2 * Math.PI);
-        ctx.fill();
-    });
-}
 
+// LIMPA A TELA E OS PONTOS DE CONTROLE
 document.addEventListener('keydown', (event) => {
     if (event.key === 'c' || event.key === 'C') {
         const canvas = document.getElementById('viewport');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         curva.pontosDeControle = [];
-    }
-    if (event.key === 'ArrowUp') {
-        let nSegmentosInput = document.getElementById('nSegmentos');
-        nSegmentosInput.value = parseInt(nSegmentosInput.value) + 1;
-        curva.drawCurve();
-    } else if (event.key === 'ArrowDown') {
-        let nSegmentosInput = document.getElementById('nSegmentos');
-        nSegmentosInput.value = Math.max(1, parseInt(nSegmentosInput.value) - 1);
-        curva.drawCurve();
     }
 });
 
@@ -117,6 +91,8 @@ class Curva {
         this.pontosDeControle.push([x, y]);
         this.drawPontosControle();
         this.drawCurve();
+        console.log(this.pontosDeControle);
+        
     }
 
     drawPontosControle() {
@@ -134,10 +110,12 @@ class Curva {
         let pontosCurva = calculateBspline(this.pontosDeControle);
         this.ctx.beginPath();
         this.ctx.moveTo(pontosCurva[0], pontosCurva[1]);
-        for (let i = 2; i < pontosCurva.length; i += 2) {
-            this.ctx.lineTo(pontosCurva[i], pontosCurva[i + 1]);
+        for (let i = 1; i < pontosCurva.length; i++) {
+            this.ctx.lineTo(pontosCurva[i][0], pontosCurva[i][1]);
         }
         this.ctx.stroke();
+        console.log(pontosCurva);
+        
     }
 }
 
